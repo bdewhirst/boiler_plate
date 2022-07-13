@@ -1,7 +1,19 @@
-w/i context of GCS:
 
-    # future work:
-    #  play with date and memory...
-    #  test/train split of titanic.csv
-    #  throw it all into a pipeline class or something
-    #  retrieve from database instead of csv; cache too.
+#future work 
+### titanic:
+* do some simple (or not-so-simple) modeling 
+* test/train split of titanic.csv
+*  throw it all into a pipeline class or something
+
+### w/i context of GCS:
+*  throw it all into a pipeline class or something
+
+
+### general pandas
+* play with date and memory...
+
+
+### even more general
+* cache data from database when retrieved...
+* move sqlite constants into a central constants or config file
+* configure black to run in PyCharm
