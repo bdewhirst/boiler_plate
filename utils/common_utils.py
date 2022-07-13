@@ -1,14 +1,13 @@
 import pandas as pd
 
 
-def csv_loader(source_file: str, source_folder: str="data/") -> pd.DataFrame:
+def csv_loader(source_file: str,) -> pd.DataFrame:
     """
     Read specified file from /data folder
-    :param source_file: filename as string, with extension (e.g. '.csv')
-    :param source_folder: source subfolder as string, defaulting to /data
+    :param source_file: filename as string, with extension (e.g. 'data/titanic.csv')
     :return: pandas dataframe from indicated CSV
     """
-    path_to_load: str= "".join([source_folder, source_file])
+    path_to_load: str= "".join([source_file])
     data = pd.read_csv(path_to_load)
     return data
 

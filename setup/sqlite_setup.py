@@ -4,39 +4,45 @@ import os
 from utils.common_utils import csv_loader
 
 
+def write_df_to_db(name, conn, df) -> None:
+    """
+    Write the specified dataframe to the database whose connection is specified by conn
+
+    :param:
+    :param conn: database connection
+    :param df: pandas dataframe
+    :return: nothing
+    """
+    df.to_sql(name=name, con=conn, index=False)
+
+
+def populate_database(conn) -> None:
+    """
+    Populate database with sample data (in this case, from kaggle titanic data)
+    :return:
+    """
+    # load local data
+    manifest: list = ["titanic", "train", "test"]
+    for name in manifest:
+        print(name)
+        path_and_name: str = "".join(["data/", name, ".csv"])
+        df = csv_loader(source_file=path_and_name)
+        write_df_to_db(name=name, conn=conn, df=df)
+
+
 def create_sqlite_db(db_file):
     """ create a database connection to a SQLite database"""
-    conn = None
     try:
         conn = sqlite3.connect(db_file)
-        print(sqlite3.version)
+        print("sqlite3 version ", sqlite3.version)
+        print("reading some csv files in and writing them to the database")
+        populate_database(conn=conn)
     except sqlite3.Error as e:
         print(e)
     finally:
         if conn:
             conn.close()
-
-
-def tmp():
-        """
-        Poke at the famous titanic dataset.
-
-        n.b.: 'train' and 'titanic' aren't the same (length or columns)
-        """
-        titanic: pd.DataFrame
-        train: pd.DataFrame
-        test: pd.DataFrame
-
-        agenda: list = ["titanic", "train", "test"]
-        for name in agenda:
-            print(name)
-            df = csv_loader(source_file=''.join([name, ".csv"]))
-            sniff_frame(df=df)
-
-
-
-
-
+    print("done")
 
 
 if __name__ == '__main__':
