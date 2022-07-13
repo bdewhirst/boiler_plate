@@ -1,5 +1,7 @@
-import pandas as pd
 import sklearn
+from sklearn import linear_model
+import pandas as pd
+import numpy as np
 
 
 def hello() -> None:
@@ -28,7 +30,7 @@ def prep_lin_reg(df: pd.DataFrame, cols_to_drop: list, cols_to_dummy: list, cols
     return df
 
 
-def fit_lin_reg(df: pd.DataFrame,):  # -> model:
+def fit_lin_reg(df: pd.DataFrame, x_cols: list, y_col: str="survived",):  # -> model:
     """
     Fit a linear regresssion on the specified columns
     :param df: pandas dataframe to fit linear regression to
@@ -37,7 +39,16 @@ def fit_lin_reg(df: pd.DataFrame,):  # -> model:
 
     n.b.: this isn't expected to perform great, but it is often best to start small and work up.
     """
-    pass
+    # consider refactoring out this prep-- it'll need to be applied to `test` as well
+    xs = df[x_cols].to_numpy()  # x_cols is already a list, whereas y_col isn't, hence the syntax difference
+    y = df[[y_col]].to_numpy()
+
+    regr = linear_model.LinearRegression()
+    
+    regr.fit(X=xs, y=y)
+
+    return regr
+
 
 # tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp
 from utils.common_utils import sqlite_connect, run_sqlite_query
@@ -48,6 +59,8 @@ to_drop = ["PassengerId", "Name", "Ticket", "Cabin",]
 to_dummy = ["Sex", "Embarked",]
 fix_nan = ["Age", ]
 train_cleaned = prep_lin_reg(df=train, cols_to_drop=to_drop, cols_to_dummy=to_dummy, cols_w_nan=fix_nan)
+train_on = ["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c", "embarked_q"]  # everything, without extra (male 1 means female 0, etc.)
+train_linear_model = fit_lin_reg(df=train_cleaned, x_cols=train_on)
 
 # ...
 # /tmp
