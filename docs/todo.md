@@ -17,3 +17,6 @@
 * cache data from database when retrieved...
 * move sqlite constants into a central constants or config file
 * configure black to run in PyCharm
+
+### best practices stuff
+* logging levels...
