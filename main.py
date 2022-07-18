@@ -17,8 +17,11 @@ def do_lm(conn) -> None:
     del all_train_cleaned, xs, y
 
     trained_linear_model = model.fit_lin_reg(xs=x_train, y=y_train)
-
     score = model.score_fit(model=trained_linear_model, x_test=x_test, y_test=y_test, )
+
+    # try statsmodels linear model, as it provides more details on the fit
+    model.do_statsmodels_lm(xs=x_train, y=y_train)  # or on raw xs, ys. It is probably doing its own holdout, or equiv.
+
     # more scoring stuff here
     # graphs here
 

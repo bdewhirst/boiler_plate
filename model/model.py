@@ -1,4 +1,6 @@
 import pandas as pd
+import scipy
+import statsmodels.api as sm
 from sklearn import linear_model
 
 
@@ -10,10 +12,8 @@ def fit_unknown_data(test: pd.DataFrame, model_fit) -> pd.DataFrame:
     :param model_fit: fitted sklearn model on training data
     :return: result of applying test data
     """
-    # ISSUE!!! "test.csv" doesn't have survived/not, so it is not suitable for evaluating the model fit-- I could probably find it, but I should, instead, do my own holdout first.
 
-    # https://www.datacourses.com/evaluation-of-regression-models-in-scikit-learn-846/
-    # X_train, X_test, y_train, y_test = train_test_split(x,y,test_size=1/3, random_state=0)
+    # needs work...
 
     to_drop = ["PassengerId", "Name", "Ticket", "Cabin", ]
     to_dummy = ["Sex", "Embarked", ]
@@ -23,6 +23,7 @@ def fit_unknown_data(test: pd.DataFrame, model_fit) -> pd.DataFrame:
     ready_test_data = clean_test_data[on].to_numpy()
     y_predicted = model_fit.predict(ready_test_data)
     y_df = pd.DataFrame(y_predicted, columns=["survived"],)
+    # needs work...
     return y_df
 
 
@@ -74,8 +75,16 @@ def fit_lin_reg(xs, y):  # -> model:
     return regr
 
 
+def do_statsmodels_lm(xs, y):
+    xs2 = sm.add_constant(xs)
+    est = sm.OLS(y, xs2)
+    est2 = est.fit()
+    print(est2.summary())
+
+
 def score_fit(model, x_test, y_test) -> None:
-    # need more than this... probably need other modules to do so (scipy, statsmodels, plots, etc.)
+    # see also statsmodels linear model, where I didn't break out scoring stuff.
+    # still could use graphs, etc.
     score = model.score(x_test, y_test)
     params = model.get_params(deep=True)
     coefs = model.coef_
