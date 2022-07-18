@@ -1,7 +1,6 @@
-import sklearn
-from sklearn import linear_model
 import pandas as pd
-# import numpy as np
+from sklearn import linear_model
+
 
 
 def fit_unknown_data(test: pd.DataFrame, model_fit) -> pd.DataFrame:
@@ -79,33 +78,7 @@ def score_fit(model, x_test, y_test) -> None:
     # need more than this... probably need other modules to do so (scipy, statsmodels, plots, etc.)
     score = model.score(x_test, y_test)
     params = model.get_params(deep=True)
-    print("score was: ", score, "\r\nparams were: ", params)
-    print(model.coef_)
-    print("this is just a placeholder so PyCharm has a valid line to latch onto")
+    coefs = model.coef_
+    print("score was: ", score, "\r\nparams were: ", params, "\r\ncoefficients were: ", coefs)
 
 
-# tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp --- tmp
-from utils.common_utils import sqlite_connect, run_sqlite_query
-
-cn = sqlite_connect()
-all_training = run_sqlite_query(conn=cn, table_name="train")
-to_drop = ["PassengerId", "Name", "Ticket", "Cabin",]
-to_dummy = ["Sex", "Embarked",]
-fix_nan = ["Age", ]
-all_train_cleaned = prep_data(df=all_training, cols_to_drop=to_drop, cols_to_dummy=to_dummy, cols_w_nan=fix_nan)
-train_on = ["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c", "embarked_q"]  # everything, without extra (male 1 means female 0, etc.)
-xs, y = split_xs_and_ys(df=all_train_cleaned, x_cols=train_on,)
-x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(xs, y, test_size =0.25)
-del all_train_cleaned, xs, y
-
-trained_linear_model = fit_lin_reg(xs= x_train, y=y_train)
-
-score = score_fit(model=trained_linear_model,x_test=x_test, y_test=y_test,)
-
-# scoring stuff
-
-test = run_sqlite_query(conn=cn, table_name="test")
-fit_unknown_data(test=test, model_fit=trained_linear_model)
-
-# ...
-# /tmp
