@@ -11,7 +11,7 @@ def do_lm(conn) -> None:
     fix_nan = ["Age", ]
     all_train_cleaned = model.prep_data(df=all_training, cols_to_drop=to_drop, cols_to_dummy=to_dummy, cols_w_nan=fix_nan)
     train_on = ["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c",
-                "embarked_q"]  # everything, without extra (male 1 means female 0, etc.)
+                "embarked_q"]  # not parsimonius...
     xs, y = model.split_xs_and_ys(df=all_train_cleaned, x_cols=train_on, )
     x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(xs, y, test_size=0.25)
     del all_train_cleaned, xs, y
