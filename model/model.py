@@ -1,6 +1,8 @@
 import pandas as pd
+import numpy as np
 import scipy
 import statsmodels.api as sm
+import matplotlib.pyplot  as plt
 from sklearn import linear_model
 
 
@@ -91,3 +93,13 @@ def score_fit(model, x_test, y_test) -> None:
     print("score was: ", score, "\r\nparams were: ", params, "\r\ncoefficients were: ", coefs)
 
 
+def strawman_plot(xs, y, cols: list,) -> None:
+    # quickly try to plot what we've got, via pandas's methods
+    both = np.append(arr=xs, values=y, axis=1)
+    df = pd.DataFrame(data=both, columns=cols)
+    #print(df.head())
+    y_= df["survived"]
+    for col in cols:  # scroll through each predictor
+        x= df[col]
+        plt.scatter(x, y_)  # not useful as-is for discrete values; perhaps a pair of histograms or something else?
+        plt.show()

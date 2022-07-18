@@ -24,6 +24,7 @@ def do_lm(conn) -> None:
 
     # more scoring stuff here
     # graphs here
+    model.strawman_plot(xs=x_train, y=y_train, cols=["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c", "embarked_q", "survived"])
 
     test= u.run_sqlite_query(conn=conn, table_name="test")
     result= model.fit_unknown_data(test=test, model_fit=trained_linear_model)
