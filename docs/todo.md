@@ -24,8 +24,13 @@
 * logging levels...
 
 
-## post-interview areas to refresh on:
+## post-interview areas to refresh on: (Lower priority ATM)
 * regularization (ridge, lasso, and related theory)
 * low positive rates "gotchas" (fraud rate, etc.)
 * logistic regression/ techniques for binary determination
 * measures of false positive, false negative
+
+
+## focus areas 7/27:
+* xgboost refresher
+* try NLP
