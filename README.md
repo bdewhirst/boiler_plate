@@ -1,7 +1,7 @@
 # boilerPlate
 generic data pipeline
 
-as of 2022-07-13, this is an early work in progress
+as of 2022-07-27, this is a work in progress, and not representative of the breadth and depth of my experience
 
 --
 Brian Dewhirst, PhD

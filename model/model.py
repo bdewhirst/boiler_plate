@@ -3,8 +3,8 @@ import numpy as np
 import scipy
 import statsmodels.api as sm
 import matplotlib.pyplot  as plt
+import xgboost as xgb
 from sklearn import linear_model
-
 
 
 def fit_unknown_data(test: pd.DataFrame, model_fit) -> pd.DataFrame:
@@ -14,9 +14,6 @@ def fit_unknown_data(test: pd.DataFrame, model_fit) -> pd.DataFrame:
     :param model_fit: fitted sklearn model on training data
     :return: result of applying test data
     """
-
-    # needs work...
-
     to_drop = ["PassengerId", "Name", "Ticket", "Cabin", ]
     to_dummy = ["Sex", "Embarked", ]
     fix_nan = ["Age", "Fare"]
@@ -53,7 +50,6 @@ def prep_data(df: pd.DataFrame, cols_to_drop: list, cols_to_dummy: list, cols_w_
 
 def split_xs_and_ys(df: pd.DataFrame, x_cols: list, y_col: str="survived",) -> tuple:
     """
-
     :param df: dataframe to split into pre
     :param x_cols: predictors of y
     :param y_col: column to be solved for
@@ -77,11 +73,40 @@ def fit_lin_reg(xs, y):  # -> model:
     return regr
 
 
-def do_statsmodels_lm(xs, y):
+def do_statsmodels_lm(xs, y,):
     xs2 = sm.add_constant(xs)
     est = sm.OLS(y, xs2)
     est2 = est.fit()
     print(est2.summary())
+
+
+def slap_into_xgb_format(xs, y, train_on: list,) -> xgb.DMatrix:
+    """
+    given a np array of x(s) and y, assemble
+
+        n.b.:... better upstream plumbing is desirable, when I get around to it
+
+    :param xs: 2d numpy array of features
+    :param y: 1d numpy array of results
+    :return: a xgboost DMatrix object
+    """
+    x_df = pd.DataFrame(xs, columns=train_on)
+    y_df = pd.DataFrame(y, columns=["Target",])
+
+    dtrain= xgb.DMatrix(data=x_df, label=y_df)
+    return dtrain
+
+
+def do_xgb(xs, y, train_on: list, param: dict = {'max_depth':2, 'eta':1, 'objective':'binary:logistic' }):
+    num_round: int = 2  # default is 10; presumably, this at 2 is to speed demo code?
+    dtrain = slap_into_xgb_format(xs=xs, y=y, train_on=train_on)
+    booster = xgb.train(params=param, dtrain=dtrain, num_boost_round=num_round, )
+    return booster  # a trained booster model
+
+
+def pred_xgb(fit_model, dtest):
+    preds = fit_model.predict(dtest)
+    return preds
 
 
 def score_fit(model, x_test, y_test) -> None:

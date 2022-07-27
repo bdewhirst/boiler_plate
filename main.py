@@ -48,7 +48,10 @@ def do_xgb(conn) -> None:
     train_on = ["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c", "embarked_q"]
     x_train, x_test, y_train, y_test= do_test_train_split(df=all_train_cleaned, train_on=train_on, )
     # note: following code should be in model.model...
-    pass  # TODO
+    result = model.do_xgb(xs=x_train, y=y_train, train_on=train_on)
+
+    # code to temporarily evaluate fit of xgb model
+    result.(...)
 
 
 def main() -> None:
@@ -58,9 +61,7 @@ def main() -> None:
     """
     try:
         conn = u.sqlite_connect()
-        # train = u.run_sqlite_query(conn=conn, table_name="train")
-        # test = u.get_table(conn=conn, table_name="test")
-        do_lm(conn=conn)
+        # do_lm(conn=conn)  # temporarily disable for xgb iteration
         do_xgb(conn=conn)
     finally:
         if conn:
