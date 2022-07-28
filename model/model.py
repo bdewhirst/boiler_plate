@@ -91,7 +91,10 @@ def slap_into_xgb_format(xs, y, train_on: list,) -> xgb.DMatrix:
     :return: a xgboost DMatrix object
     """
     x_df = pd.DataFrame(xs, columns=train_on)
-    y_df = pd.DataFrame(y, columns=["Target",])
+    if y is not None:
+        y_df = pd.DataFrame(y, columns=["Target",])
+    else:
+        y_df = None
 
     dtrain= xgb.DMatrix(data=x_df, label=y_df)
     return dtrain
@@ -104,8 +107,10 @@ def do_xgb(xs, y, train_on: list, param: dict = {'max_depth':2, 'eta':1, 'object
     return booster  # a trained booster model
 
 
-def pred_xgb(fit_model, dtest):
-    preds = fit_model.predict(dtest)
+def pred_xgb(fit_model, dtest, x_cols: list,):
+    # dtest is expected to be a numpy 2d array, which we'll need to convert into xgb.DMatrix
+    xs = slap_into_xgb_format(xs=dtest, y=None, train_on=x_cols,)
+    preds = fit_model.predict(xs)
     return preds
 
 

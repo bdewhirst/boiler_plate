@@ -47,11 +47,19 @@ def do_xgb(conn) -> None:
     all_train_cleaned = ready_training(conn)
     train_on = ["pclass", "age", "sibsp", "parch", "fare", "sex_male", "embarked_c", "embarked_q"]
     x_train, x_test, y_train, y_test= do_test_train_split(df=all_train_cleaned, train_on=train_on, )
-    # note: following code should be in model.model...
-    result = model.do_xgb(xs=x_train, y=y_train, train_on=train_on)
 
-    # code to temporarily evaluate fit of xgb model
-    result.(...)
+    trained_booster = model.do_xgb(xs=x_train, y=y_train, train_on=train_on)
+
+    # code to run xgb on test data here
+    y_calc = model.pred_xgb(fit_model=trained_booster, dtest=x_test, x_cols=train_on,)
+
+    # code to evaluate fit of xgb model here
+    # tmp
+    pd.DataFrame(y_calc).to_csv("y_calc.csv", index=False)
+    pd.DataFrame(y_test).to_csv("y_test.csv", index=False)
+    # gives RSQ of ~0.4, which is comparable to the linear model
+    # the fact that we're getting floats is probably an issue. there are likely issues with the 0-1 range as well
+
 
 
 def main() -> None:
