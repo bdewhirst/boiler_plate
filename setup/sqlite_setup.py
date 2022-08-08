@@ -31,7 +31,7 @@ def populate_database(conn) -> None:
 
 
 def create_sqlite_db(db_file):
-    """ create a database connection to a SQLite database"""
+    """create a database connection to a SQLite database"""
     try:
         conn = sqlite3.connect(db_file)
         print("sqlite3 version ", sqlite3.version)
@@ -45,7 +45,7 @@ def create_sqlite_db(db_file):
     print("done")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # n.b.: trying to connect to a SQLite database that doesn't exist results in the creation of said database
     # (this assumes the directory already exists-- it'll only create the *.db file)
 

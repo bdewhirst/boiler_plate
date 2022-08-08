@@ -14,7 +14,9 @@ import pandas as pd
 # for query in bigquery_queries:
 #     run_query(query=query)
 
-client = bigquery.Client(project="able-air-354719", credentials="google_credential.json")
+client = bigquery.Client(
+    project="able-air-354719", credentials="google_credential.json"
+)
 # query="test.sql"
 
 query = """
@@ -22,7 +24,9 @@ query = """
     WHERE geo_id LIKE '25017%' --MIddlesex County, MA (FIPS ID)
     limit 10
 """
-bigquery_queries: list = ["test.sql",]
+bigquery_queries: list = [
+    "test.sql",
+]
 query_path = "".join(["/queries/", query])
 
 output = client.query(query_path)
