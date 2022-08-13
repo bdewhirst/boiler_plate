@@ -1,3 +1,6 @@
+# incomplete work-- I need to decide whether to double down on GCS or pursue AWS, which has greater market share
+
+
 from google.cloud import bigquery
 import pandas as pd
 

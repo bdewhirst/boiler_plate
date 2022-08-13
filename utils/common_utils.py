@@ -33,7 +33,6 @@ def sqlite_connect():
     Create a connection to the sqlite database specified by the included constants
     :return: connection to database
     """
-
     YOUR_PREFERRED_DIRECTORY = r"C:\Users\Brian\sqlite\db"
     DB_NAME = "pythonsqlite.db"
 
