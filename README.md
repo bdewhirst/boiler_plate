@@ -1,7 +1,7 @@
 # boiler plate
 generic data pipeline
 
-as of 2022-07-27, this is a work in progress, and not representative of the breadth or depth of my experience
+As of 2022-08-25, this is a work in progress, but may be viewed as an incomplete sample of how I code this sort of thing. (At times, it will also include techniques I'm learning, refreshing myself on, or experimenting with further.)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 

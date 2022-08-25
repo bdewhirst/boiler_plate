@@ -1,5 +1,17 @@
 # future work 
 
+## todo 2022-08-25
+- tackle statsmodels logistic regression (unregularized) to start
+- (reguarlized) logistic regression
+  - and with scikit-learn instead of statsmodels?
+- pyspark (w/i scope of this project, or aws stuff, or both?)
+- boilerplate code for:
+  - correlation matrices
+  - small multiple plots of x0, x1,...xN _v._ y 
+    - (1xN vertical column, I guess)
+
+
+
 ## focus areas:
 * improve coverage of typing, docstrings, etc.
 * more on xgboost
