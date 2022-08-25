@@ -150,13 +150,17 @@ def do_skl_logit(conn):
 
     trained_skl_logit = model.do_skl_logit(xs=x_train, y=y_train, train_on=train_on)
 
-    y_calc = model.pred_skl_logit(
+    y_calc, y_calc_probs = model.pred_skl_logit(
         fit_model=trained_skl_logit,
         dtest=x_test,
         x_cols=train_on,
     )
-
-    model.prelim_logit_eval(y_test=y_test, y_calc=y_calc)
+    model.prelim_logit_eval(
+        y_test=y_test,
+        y_calc=y_calc,
+        y_probability_predictions=y_calc_probs,
+        fit_model=trained_skl_logit,
+    )
 
 
 def main() -> None:

@@ -4,6 +4,7 @@ import scipy
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 import xgboost as xgb
+import sklearn
 from sklearn import linear_model
 
 
@@ -189,14 +190,63 @@ def pred_skl_logit(
     x_cols,
 ):
     preds = fit_model.predict(dtest)
-    return preds
+    pred_probs = fit_model.predict_proba(dtest)[:, 1]
+    return preds, pred_probs
 
 
-def prelim_logit_eval(y_test, y_calc):
-    # code to eval accuracy here... (calc by hand indicates 80% correct (true pos or true neg), 20% incorrect (false pos or false neg)
-    # old:
-    pd.DataFrame(y_calc).to_csv("y_calc.csv", index=False)
-    pd.DataFrame(y_test).to_csv("y_test.csv", index=False)
+def prelim_logit_eval(y_test, y_calc, y_probability_predictions, fit_model) -> None:
+    """
+    Run adhoc code to output selected model performance metrics
+    :param y_test: holdout data as 1d numpy array
+    :param y_calc: calculated values corresponding to the actuals of y_test; also a 1d numpy array
+    :param y_probability_predictions: probabilities used to generate y_calc (read the docs further JIC); 1d np. array
+    :param fit_model: fitted logistic model generating the calculated values above (suggests future refactoring?)
+    :return: returns nothing (outputs to stdout and/or csvs written to the working directory
+
+    handy refresher reference: https://developers.google.com/machine-learning/crash-course/classification/roc-and-auc
+    ref: https://www.kaggle.com/code/mnassrib/titanic-logistic-regression-with-python/notebook
+    """
+    [fpr, tpr, thr] = sklearn.metrics.roc_curve(y_test, y_probability_predictions)
+    print("Train/Test split results:")
+    print(
+        fit_model.__class__.__name__
+        + " accuracy is %2.3f" % sklearn.metrics.accuracy_score(y_test, y_calc)
+    )
+    print(
+        fit_model.__class__.__name__
+        + " log_loss is %2.3f"
+        % sklearn.metrics.log_loss(y_test, y_probability_predictions)
+    )
+    print(
+        fit_model.__class__.__name__ + " auc is %2.3f" % sklearn.metrics.auc(fpr, tpr)
+    )
+    idx = np.min(np.where(tpr > 0.95))  # first threshold w/ sensibility > 0.95
+    plt.figure()
+    plt.plot(
+        fpr,
+        tpr,
+        color="coral",
+        label="ROC curve (area = %0.3f)" % sklearn.metrics.auc(fpr, tpr),
+    )
+    plt.plot([0, 1], [0, 1], "k--")
+    plt.plot([0, fpr[idx]], [tpr[idx], tpr[idx]], "k--", color="blue")
+    plt.plot([fpr[idx], fpr[idx]], [0, tpr[idx]], "k--", color="blue")
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel("False Positive Rate (1 - specificity)", fontsize=14)
+    plt.ylabel("True Positive Rate (recall)", fontsize=14)
+    plt.title("Receiver operating characteristic (ROC) curve")
+    plt.legend(loc="lower right")
+    plt.show()
+    print(
+        "Using a threshold of %.3f " % thr[idx]
+        + "guarantees a sensitivity of %.3f " % tpr[idx]
+        + "and a specificity of %.3f" % (1 - fpr[idx])
+        + ", i.e. a false positive rate of %.2f%%." % (np.array(fpr[idx]) * 100)
+    )
+    ## manual accuracy from these csvs TLDR: (calc by hand indicates 80% correct (true pos or true neg), 20% incorrect (false pos or false neg)
+    # pd.DataFrame(y_calc).to_csv("y_calc.csv", index=False)
+    # pd.DataFrame(y_test).to_csv("y_test.csv", index=False)
     return None
 
 
