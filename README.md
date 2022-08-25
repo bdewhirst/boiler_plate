@@ -1,4 +1,4 @@
-# boilerPlate
+# boiler plate
 generic data pipeline
 
 as of 2022-07-27, this is a work in progress, and not representative of the breadth or depth of my experience
