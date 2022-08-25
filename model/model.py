@@ -176,6 +176,30 @@ def pred_xgb(
     return preds
 
 
+# scikit-learn logistic regression (regularized out of the box)
+def do_skl_logit(xs, y, train_on):
+    skl_logit = linear_model.LogisticRegression()  # sklearn
+    skl_logit.fit(xs, y)
+    return skl_logit  # a trained booster model
+
+
+def pred_skl_logit(
+    fit_model,
+    dtest,
+    x_cols,
+):
+    preds = fit_model.predict(dtest)
+    return preds
+
+
+def prelim_logit_eval(y_test, y_calc):
+    # code to eval accuracy here... (calc by hand indicates 80% correct (true pos or true neg), 20% incorrect (false pos or false neg)
+    # old:
+    pd.DataFrame(y_calc).to_csv("y_calc.csv", index=False)
+    pd.DataFrame(y_test).to_csv("y_test.csv", index=False)
+    return None
+
+
 def score_fit(model, x_test, y_test) -> None:
     # see also statsmodels linear model, where I didn't break out scoring stuff.
     # still could use graphs, etc.

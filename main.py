@@ -131,6 +131,34 @@ def do_xgb(conn) -> None:
     # the fact that we're getting floats is probably an issue. there are likely issues with the 0-1 range as well
 
 
+def do_skl_logit(conn):
+    all_train_cleaned = ready_training(conn)
+    train_on = [
+        "pclass",
+        "age",
+        "sibsp",
+        "parch",
+        "fare",
+        "sex_male",
+        "embarked_c",
+        "embarked_q",
+    ]
+    x_train, x_test, y_train, y_test = do_test_train_split(
+        df=all_train_cleaned,
+        train_on=train_on,
+    )
+
+    trained_skl_logit = model.do_skl_logit(xs=x_train, y=y_train, train_on=train_on)
+
+    y_calc = model.pred_skl_logit(
+        fit_model=trained_skl_logit,
+        dtest=x_test,
+        x_cols=train_on,
+    )
+
+    model.prelim_logit_eval(y_test=y_test, y_calc=y_calc)
+
+
 def main() -> None:
     """
     Main execution path of function
@@ -139,7 +167,8 @@ def main() -> None:
     try:
         conn = u.sqlite_connect()
         # do_lm(conn=conn)  # temporarily disable for xgb iteration
-        do_xgb(conn=conn)
+        # do_xgb(conn=conn)  # " " "
+        do_skl_logit(conn)
     finally:
         if conn:
             conn.close()
