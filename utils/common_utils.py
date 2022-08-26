@@ -62,7 +62,7 @@ def run_sqlite_query(
     :param table_name: name of table/view to retrieve
     :return: pandas dataframe
     """
-    print("note-- currently `run_sqlite_query(...)` is rather inflexible")
+    # print("note-- currently `run_sqlite_query(...)` is rather inflexible")
 
     query = f"select * from {table_name}"
     data = pd.read_sql_query(sql=query, con=conn)
