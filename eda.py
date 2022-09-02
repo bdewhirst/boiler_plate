@@ -19,6 +19,15 @@ def get_data() -> pd.DataFrame:
     return data
 
 
+def do_correl_matrix(data: pd.DataFrame) -> None:
+    """
+
+    :param data: pandas dataframe of
+    :return: returns nothing (prints to stdout)
+    """
+    pass  # TODO week of 8/29
+
+
 def eda(data: pd.DataFrame) -> None:
     """
     main execution loop-- "do exploratory data analysis"
