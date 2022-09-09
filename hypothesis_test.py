@@ -35,7 +35,9 @@ def data_bootstrap() -> tuple:
     campaign_data = pd.read_excel(
         "data/grocery_database.xlsx", sheet_name="campaign_data"
     )
-    observed_values = pd.crosstab(campaign_data["mailer_type"], campaign_data["signup_flag"]).values
+    observed_values = pd.crosstab(
+        campaign_data["mailer_type"], campaign_data["signup_flag"]
+    ).values
     # n.b.: values of "mailer_type":
     # print("unique values of mailer type are", str(campaign_data.mailer_type.unique()))
     relevant_data = campaign_data[["mailer_type", "signup_flag"]].copy()
@@ -84,7 +86,9 @@ def do_ab_test(
     # b_rate = b_mean
 
     # calculate expected frequencies & chi square statistic
-    chi2_statistic, p_value, dof, expected_values = chi2_contingency(observed_values, correction=False)
+    chi2_statistic, p_value, dof, expected_values = chi2_contingency(
+        observed_values, correction=False
+    )
     print(chi2_statistic, p_value)
 
     # find the critical value for our test
