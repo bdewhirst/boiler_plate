@@ -3,19 +3,20 @@ import pandas as pd
 import utils.common_utils as u
 
 
-def get_data() -> pd.DataFrame:
+def get_data(csv: str) -> pd.DataFrame:
     """
     For now, hard coded function to pull example data.
 
     exactly how/where data should be pulled
     :return: pandas dataframe with the intended raw data
     """
-    try:
-        conn = u.sqlite_connect()
-        data = u.run_sqlite_query(conn=conn, table_name="train")
-    finally:
-        if conn:
-            conn.close()
+    data = pd.read_csv(csv)
+    # try:
+    #     conn = u.sqlite_connect()
+    #     data = u.run_sqlite_query(conn=conn, table_name="train")
+    # finally:
+    #     if conn:
+    #         conn.close()
     return data
 
 
@@ -68,5 +69,5 @@ def eda(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    data: pd.DataFrame = get_data()
+    data: pd.DataFrame = get_data(csv='data/sundae.csv')  # reminder: update file string
     eda(data)
