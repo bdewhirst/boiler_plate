@@ -1,8 +1,11 @@
 import pandas as pd
+import numpy as np
 
 
 # CONSTANTS
-CSV = "data/sundae.csv"
+RAWCSV: str = "data/sundae-raw.csv"
+SAMPCSV: str = "data/sundae-sample.csv"
+SEED: int = 202209131701
 
 
 def load_and_clean(csv: str) -> pd.DataFrame:
@@ -20,8 +23,15 @@ def load_and_clean(csv: str) -> pd.DataFrame:
 
 
 def main() -> None:
-    data = load_and_clean(csv=CSV)
+    """
+    This function
+    :return: returns nothing; output to STDOUT for now, and/or direct inspection via breakpoints, etc.
+    """
+    # for reproducible iteration, set seed
+    np.random.seed(SEED)
+    data = load_and_clean(csv=RAWCSV)
 
 
 if __name__ == "__main__":
+
     main()
