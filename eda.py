@@ -1,7 +1,7 @@
 import pandas as pd
 
 import utils.common_utils as u
-
+import utils.constants as c
 
 def get_data(csv: str) -> pd.DataFrame:
     """
@@ -69,5 +69,7 @@ def eda(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    data: pd.DataFrame = get_data(csv="data/sundae.csv")  # reminder: update file string
+    data: pd.DataFrame = get_data(
+        csv=c.RAWCSV
+    )  # reminder: update file string
     eda(data)
