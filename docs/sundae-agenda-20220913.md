@@ -38,8 +38,6 @@
   * iterative data exploration
     * data cleaning
     * initial thoughts on feature selection
-* test/ train split
-  * KISS 30% holdout, CV as possible enhancement if time permits
 
 * modeling
   * iterative model development
