@@ -2,6 +2,20 @@ import pandas as pd
 import numpy as np
 
 import utils.constants as c
+import utils.eda_tools as eda
+
+
+def main(do_sample: bool = False) -> None:
+    """
+    This function
+    :return: returns nothing; output to STDOUT for now, and/or direct inspection via breakpoints, etc.
+    """
+    # for reproducible iteration, set seed
+    np.random.seed(c.SEED)
+    # when using pandas's sample method, df.sample(..., random_state= SEED)
+    data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample)
+    eda(data=data)
+    # ...
 
 
 def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
@@ -20,15 +34,17 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     return data
 
 
-def main(do_sample: bool = False) -> None:
+def eda(data: pd.DataFrame) -> None:
     """
-    This function
-    :return: returns nothing; output to STDOUT for now, and/or direct inspection via breakpoints, etc.
+    main execution loop-- "do exploratory data analysis"
+    :param data: pandas dataframe of data we're exploring, analyzing
+    :return: nothing (it writes to standard out, or logs if logs are later implemented)
     """
-    # for reproducible iteration, set seed
-    np.random.seed(c.SEED)
-    # when using pandas's sample method, df.sample(..., random_state= SEED)
-    data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample)
+    eda.verbose_sniff(data=data)
+
+
+
+
 
 
 if __name__ == "__main__":
