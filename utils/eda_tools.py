@@ -2,16 +2,17 @@ import pandas as pd
 import numpy as np
 
 
-def verbose_eda(data: pd.DataFrame) -> None:
+def verbose_sniff(data: pd.DataFrame) -> None:
     """
     Provide descriptive information about a given dataframe
     :param data: pandas dataframe to be examined
     :return: nothing-- currently prints to STDOUT
     """
     # still not showing full width... (pycharm + pandas issue, however pycharm does support direct inspection)
-    # pd.set_option("display.max_colwidth", None)
-    # pd.set_option("display.width", 2000)
-    # pd.set_option("display.max_columns", 10)
+    pd.set_option("display.max_colwidth", None)
+    pd.set_option("display.width", 2000)
+    pd.set_option("display.max_columns", 10)
+    print("REMINDER TO SELF: FOR FULL-WIDTH, USE THE TERMINAL!")
     message = "".join(["data shape is ", str(data.shape)])
     print(message)
     message = "".join(["missing data by column: \r\n", str(data.isnull().sum())])

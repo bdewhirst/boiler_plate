@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 import utils.constants as c
-import utils.eda_tools as eda
+import utils.eda_tools as eda_tools
 
 
 def main(do_sample: bool = False) -> None:
@@ -16,6 +16,7 @@ def main(do_sample: bool = False) -> None:
     data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample)
     eda(data=data)
     # ...
+    pass
 
 
 def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
@@ -27,8 +28,8 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     data = pd.read_csv(csv)
 
     if do_sample:  # for development. note that "row 0" here != "row 0" in original.
-        data = data.sample(n=1000, random_state=c.SEED).reset_index(drop=True)
-    # data cleaning/prep:  (see eda.py, and/or related notes)
+        data = data.sample(n=999, random_state=c.SEED).reset_index(drop=True)
+    # data cleaning/prep:  (iterate w/ EDA)
     # ...
     # ...
     return data
@@ -40,7 +41,9 @@ def eda(data: pd.DataFrame) -> None:
     :param data: pandas dataframe of data we're exploring, analyzing
     :return: nothing (it writes to standard out, or logs if logs are later implemented)
     """
-    eda.verbose_sniff(data=data)
+    desc = data.describe()
+    eda_tools.verbose_sniff(data=data)
+    pass
 
 
 
