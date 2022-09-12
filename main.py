@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 
 import utils.constants as c
-import utils.eda_tools as eda_tools
+from utils import eda_tools
+from model import model
 
 
 def main(do_sample: bool = False) -> None:
@@ -25,15 +26,29 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     :param csv: string specifying location of csv file (e.g., 'data/sundae.csv')
     :return: returns a pandas dataframe containing the cleaned result
     """
-    data = pd.read_csv(csv)
+    data = pd.read_csv(
+        csv
+    )  # may need to be refactored if the data isn't in csv format. Alternatively, convert it.
 
     if do_sample:  # for dev. n.b.: "row 0" here != "row 0" in original.
         data = data.sample(n=c.SAMPLE, replace=True, random_state=c.SEED).reset_index(
             drop=True
         )
+
     # data cleaning/prep:  (iterate w/ EDA)
+    data.columns = data.columns.str.lower()  # all column names to lower case
+    # ...
+    # cols to dummy-- i.e., onehot encode, etc.
+    cols_to_dummy: list = []  # !!!
+    data = pd.get_dummies(data, columns=cols_to_dummy)
+    cols_to_drop: list = []  # !!!
+    data = data.drop(labels=cols_to_drop, axis=1)
+    cols_w_nan: list = []
+    for nancol in cols_w_nan:
+        data[nancol].fillna(value=data[nancol].mean(), inplace=True)
     # ...
     # ...
+    data = data.dropna()  # crude... but may catch something otherwise missed
     return data
 
 

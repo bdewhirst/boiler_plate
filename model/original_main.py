@@ -2,7 +2,7 @@ import sklearn
 import pandas as pd
 
 import utils.common_utils as u
-import model.model as model
+import model.original_model as model
 
 
 def ready_training(conn) -> pd.DataFrame:

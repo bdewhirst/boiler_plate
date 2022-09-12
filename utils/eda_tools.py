@@ -34,10 +34,11 @@ def verbose_sniff(data: pd.DataFrame) -> None:
     say_tp_message(desc="data head is: \r\n", strdata=str(data.head()))
     say_tp_message(desc="pandas describe is: \r\n", strdata=str(data.describe()))
     say_tp_message(desc="data types are: \r\n", strdata=str(data.dtypes))
+    print("for these next two, remember we're sampling with replacement to start")
     say_tp_message(desc="unique vals by column are: \r\n", strdata=str(data.nunique()))
-    # note: we're sampling with replacement, so the following option would give a false positive as-is
-    # say_tp_message(desc="check for duplicate rows: \r\n", strdata=str(data.duplicated().sum()))
-    print("watch out for unintended duplicates-- as-is, we're sampling with replacement")
+    say_tp_message(
+        desc="check for duplicate rows: \r\n", strdata=str(data.duplicated().sum())
+    )
 
 
 def do_correl_matrix(data: pd.DataFrame) -> None:
