@@ -24,6 +24,13 @@ def do_test_train_split(
     return x_train, x_test, y_train, y_test
 
 
+def do_global_naive(y):
+    # take a global average-- work on this further
+    y_mean = y.mean()
+    pass
+
+
+
 def fit_lin_reg(xs, y):  # -> model:
     """
     Fit a linear regresssion on the specified columns

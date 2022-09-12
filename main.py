@@ -69,10 +69,4 @@ def do_modeling(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-
     main(do_sample=True)  # remember to disable later; arg. defaults to false
-
-    # tmp reminders
-    # scrap note
-    # how to introduce dummies
-    # create classes at some point
