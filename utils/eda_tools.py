@@ -25,7 +25,8 @@ def verbose_sniff(data: pd.DataFrame) -> None:
     pd.set_option("display.width", 2000)
     pd.set_option("display.max_columns", 10)
 
-    say_tp_message(desc="data info is \r\n", strdata=str(data.info()))
+    say_tp_message(desc="data info is \r\n", strdata="")
+    data.info()  # prints itself
     say_tp_message(desc="data shape is ", strdata=str(data.shape))
     say_tp_message(
         desc="missing data by column: \r\n", strdata=str(data.isnull().sum())
@@ -33,7 +34,10 @@ def verbose_sniff(data: pd.DataFrame) -> None:
     say_tp_message(desc="data head is: \r\n", strdata=str(data.head()))
     say_tp_message(desc="pandas describe is: \r\n", strdata=str(data.describe()))
     say_tp_message(desc="data types are: \r\n", strdata=str(data.dtypes))
-    say_tp_message(desc="data types are: \r\n", strdata=str(data.dtypes))
+    say_tp_message(desc="unique vals by column are: \r\n", strdata=str(data.nunique()))
+    # note: we're sampling with replacement, so the following option would give a false positive as-is
+    # say_tp_message(desc="check for duplicate rows: \r\n", strdata=str(data.duplicated().sum()))
+    print("watch out for unintended duplicates-- as-is, we're sampling with replacement")
 
 
 def do_correl_matrix(data: pd.DataFrame) -> None:
