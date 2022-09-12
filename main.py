@@ -27,8 +27,10 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     """
     data = pd.read_csv(csv)
 
-    if do_sample:  # for development. note that "row 0" here != "row 0" in original.
-        data = data.sample(n=999, random_state=c.SEED).reset_index(drop=True)
+    if do_sample:  # for dev. n.b.: "row 0" here != "row 0" in original.
+        data = data.sample(n=c.SAMPLE, replace=True, random_state=c.SEED).reset_index(
+            drop=True
+        )
     # data cleaning/prep:  (iterate w/ EDA)
     # ...
     # ...
@@ -41,13 +43,14 @@ def eda(data: pd.DataFrame) -> None:
     :param data: pandas dataframe of data we're exploring, analyzing
     :return: nothing (it writes to standard out, or logs if logs are later implemented)
     """
-    desc = data.describe()
     eda_tools.verbose_sniff(data=data)
+    eda_tools.do_correl_heatmap(data=data)
+    eda_tools.do_small_multiples(data=data, y_col=c.DEP_VAR_COL_NAME)
+    # more?
+
+
+def do_modeling(data: pd.DataFrame) -> None:
     pass
-
-
-
-
 
 
 if __name__ == "__main__":
