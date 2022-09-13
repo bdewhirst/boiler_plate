@@ -14,7 +14,6 @@
     * Brian is happy to support other users using other IDEs (etc.)
       * (if requested, show Brian can start jupyter notebook locally)
     * Today, local execution is planned
-      * If highly desirable, Brian can replicate w/ AWS or GCP (with relaxed time pressure) as follow-up
     * In general, Brian will move from simple to complex
       * At each stage, I intend to have a workable fallback answer (likely from the previous stage)
 
