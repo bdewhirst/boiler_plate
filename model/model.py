@@ -14,13 +14,9 @@ def split_xs_and_ys(
     :param x_cols: predictors of y
     :param y_col: column to be solved for
     :return: tuple of two numpy objects based on xs and y respectively
-
-    todo: remove .to_numpy()'s
     """
-    xs = df[
-        x_cols
-    ].to_numpy()  # x_cols is already a list, whereas y_col isn't, hence the syntax difference
-    y = df[[y_col]].to_numpy()
+    xs = df[x_cols]
+    y = df[[y_col]]
     return (xs, y)
 
 

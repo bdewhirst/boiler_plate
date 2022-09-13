@@ -25,7 +25,7 @@ def main(do_sample: bool = False, do_eda: bool = False) -> None:
 
     model_types = ["global_naive", "sm_linear", "sk_linear"]
     rs = fit_several_models(x_train=x_train, y_train=y_train, model_types=model_types)
-
+    print(rs)  # tmp
     # score_model(...)
     # score_several_models(...)
     # display_scores(...)
