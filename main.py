@@ -35,7 +35,9 @@ def main(do_sample: bool = False, do_eda: bool = False, do_seed: bool = True) ->
     # ensembling?
     # evaluate ensemble results?
 
-    print("Modeling complete. Check that full dataset was used if intended. Consider further improvements.")
+    print(
+        "Modeling complete. Check that full dataset was used if intended. Consider further improvements."
+    )
 
 
 def load_and_clean(
@@ -168,7 +170,7 @@ def score_model(x_test: pd.DataFrame, y_test: pd.Series, model_to_test: dict) ->
 
 
 def score_several_models(
-    x_test: pd.DataFrame, y_test: pd.Series,  models_to_test: dict
+    x_test: pd.DataFrame, y_test: pd.Series, models_to_test: dict
 ) -> None:
     """
     Using the provided test data, evaluate the performance of several models and print the results
