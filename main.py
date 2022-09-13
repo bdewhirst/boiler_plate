@@ -26,12 +26,11 @@ def main(do_sample: bool = False, do_eda: bool = False, do_seed: bool = True) ->
     x_train, x_test, y_train, y_test = model.do_test_train_split(
         df=data, indep_vars=indep_vars, dep_var=dep_var, test_size=0.30
     )
-    # model_types = ["global_naive", "sm_linear", "sk_linear"]  # TMP !!!
-    model_types = ["sm_linear"]  # TMP !!!
+    model_types = ["global_naive", "sm_linear", "sk_linear"]
     trained_models = fit_several_models(
         x_train=x_train, y_train=y_train, model_types=model_types
     )
-    score_several_models(x_test=x_test, y_test=y_test, x_cols=indep_vars, models_to_test=trained_models)
+    score_several_models(x_test=x_test, y_test=y_test, models_to_test=trained_models)
 
     # ensembling?
     # evaluate ensemble results?
@@ -147,12 +146,11 @@ def fit_several_models(
     return results
 
 
-def score_model(x_test: pd.DataFrame, y_test: pd.Series, x_cols: list, model_to_test: dict) -> None:
+def score_model(x_test: pd.DataFrame, y_test: pd.Series, model_to_test: dict) -> None:
     """
     Using the provided test data, evaluate the performance of the provided model
     :param x_test: matrix of independent variables as a pandas dataframe
     :param y_test: array of dependent variable as a pandas series
-    :param x_cols: list of the columns we're training on
     :param model_to_test: dictionary of {model_type: fitted_model,} pair
     :return: nothing-- function called prints to STDOUT
 
@@ -162,7 +160,7 @@ def score_model(x_test: pd.DataFrame, y_test: pd.Series, x_cols: list, model_to_
         if model_type == "global_naive":
             model.score_global_naive(y_test=y_test, fit_model=fit_model)
         elif model_type == "sm_linear":
-            model.score_sm_linear_fit(x_test=x_test, y_test=y_test, x_cols=x_cols, fit_model=fit_model)
+            model.score_sm_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
         elif model_type == "sk_linear":
             model.score_sk_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
         else:
@@ -170,7 +168,7 @@ def score_model(x_test: pd.DataFrame, y_test: pd.Series, x_cols: list, model_to_
 
 
 def score_several_models(
-    x_test: pd.DataFrame, y_test: pd.Series, x_cols: list, models_to_test: dict
+    x_test: pd.DataFrame, y_test: pd.Series,  models_to_test: dict
 ) -> None:
     """
     Using the provided test data, evaluate the performance of several models and print the results
@@ -185,10 +183,8 @@ def score_several_models(
         model_to_test: dict = {
             k: v,
         }
-        score_model(x_test=x_test, y_test=y_test, x_cols=x_cols, model_to_test=model_to_test)
+        score_model(x_test=x_test, y_test=y_test, model_to_test=model_to_test)
 
 
 if __name__ == "__main__":
-    # main(do_sample=False, do_eda=True)  # TMP !!!
-    main(do_sample=True, do_eda=False)  # TMP !!!
-
+    main(do_sample=False, do_eda=True)

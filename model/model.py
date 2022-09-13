@@ -124,6 +124,7 @@ def score_sm_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> N
     :param fit_model:
     :return:
     """
+    x_test = sm.add_constant(x_test)
     print("." * 10)
     print("Accuracy metrics for statsmodels linear regression:")
     y_pred = fit_model.predict(x_test)
