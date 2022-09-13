@@ -6,14 +6,18 @@ from utils import eda_tools
 from model import model
 
 
-def main(do_sample: bool = False, do_eda: bool = False) -> None:
+def main(do_sample: bool = False, do_eda: bool = False, do_seed: bool = True) -> None:
     """
     Main function which is called when the model framework is run
-    :return: returns nothing; output to STDOUT
+    :param do_sample: True/False value which controls whether raw inputs are sampled or complete
+    :param do_eda: True/False value which controls whether to run semi-automated exploratory data analysis
+    :param do_seed: True/False value which controls whether to set a seed for
+    :return: returns nothing; outputs to STDOUT
     """
     # for reproducible iteration, set seed
-    np.random.seed(c.SEED)
-    data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample)
+    if do_seed:
+        np.random.seed(c.SEED)
+    data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample, do_seed=do_seed)
 
     if do_eda:
         eda(data=data)  # n.b.: some approaches here _need_ scaled-down or sampled data
@@ -30,15 +34,20 @@ def main(do_sample: bool = False, do_eda: bool = False) -> None:
     # score_several_models(...)
     # display_scores(...)
 
-    # print(
-    #     "modeling complete-- check that full dataset was used if intended-- consider further feature selection"
-    # )
+    # ensembling?
+    # evaluating ensemble results?
+
+    # print(Modeling complete. Check that full dataset was used if intended. Consider further improvements.")
 
 
-def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
+def load_and_clean(
+    csv: str, do_sample: bool = False, do_seed: bool = True
+) -> pd.DataFrame:
     """
     Load csv-format data and clean it using static code (for now)
     :param csv: string specifying location of csv file (e.g., 'data/sundae.csv')
+    :param do_sample: True/False value which controls whether to sample or use all raw data
+    :param do_seed: True/False value which controls whether to use a fixed seed for random selection
     :return: returns a pandas dataframe containing the cleaned result
 
     - could be refactored to separate concerns of loading and cleaning
@@ -49,9 +58,15 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     )  # may need to be refactored if the data isn't in csv format. Alternatively, convert it.
 
     if do_sample:  # for dev. n.b.: "row 0" here != "row 0" in original.
-        data = data.sample(n=c.SAMPLE, replace=True, random_state=c.SEED).reset_index(
-            drop=True
-        )
+        if do_seed:
+            data = data.sample(
+                n=c.SAMPLE, replace=True, random_state=c.SEED
+            ).reset_index(drop=True)
+        else:
+            data = data.sample(
+                n=c.SAMPLE,
+                replace=True,
+            ).reset_index(drop=True)
 
     # data cleaning/prep:  (iterate w/ EDA)
     data.columns = data.columns.str.lower()  # all column names to lower case

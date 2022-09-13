@@ -1,7 +1,7 @@
 import statsmodels.api as sm
 import pandas as pd
-import sklearn
-from sklearn import linear_model
+from sklearn import model_selection as skl_model_selection
+from sklearn import linear_model  # as skl_linear_model
 
 
 def split_xs_and_ys(
@@ -36,7 +36,7 @@ def do_test_train_split(
         x_cols=indep_vars,
         y_col=dep_var,
     )
-    x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(
+    x_train, x_test, y_train, y_test = skl_model_selection.train_test_split(
         xs, y, test_size=test_size
     )
     return x_train, x_test, y_train, y_test
@@ -65,7 +65,7 @@ def do_groupby_naive(xs: pd.DataFrame, y: pd.Series) -> dict:
     raise ValueError("This model type isn't actually implemented yet")
 
 
-def do_statsmodels_lm(xs, y: pd.Series) -> dict:
+def do_statsmodels_lm(xs: pd.DataFrame, y: pd.Series) -> dict:
     """
     Fit a linear regression on the specified columns using statsmodels
     :param xs: (i.e. X) pandas dataframe to fit linear regression to
@@ -79,7 +79,7 @@ def do_statsmodels_lm(xs, y: pd.Series) -> dict:
     return {"sm_linear": est2}
 
 
-def fit_lin_reg(xs, y: pd.Series) -> dict:
+def fit_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
     """
     Fit a linear regression on the specified columns using sklearn
     :param xs: (i.e. X) pandas dataframe to fit linear regression to
@@ -87,5 +87,7 @@ def fit_lin_reg(xs, y: pd.Series) -> dict:
     :return: dictionary of model type and fitted model as key/value pair
     """
     regr = linear_model.LinearRegression()
+    xs = xs
+    y = y
     fit_model = regr.fit(X=xs, y=y)
     return {"sk_linear": fit_model}
