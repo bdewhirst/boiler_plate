@@ -6,18 +6,33 @@ from utils import eda_tools
 from model import model
 
 
-def main(do_sample: bool = False) -> None:
+def main(do_sample: bool = False, do_eda: bool = False) -> None:
     """
-    This function
-    :return: returns nothing; output to STDOUT for now, and/or direct inspection via breakpoints, etc.
+    Main function which is called when the model framework is run
+    :return: returns nothing; output to STDOUT
     """
     # for reproducible iteration, set seed
     np.random.seed(c.SEED)
-    # when using pandas's sample method, df.sample(..., random_state= SEED)
     data = load_and_clean(csv=c.RAWCSV, do_sample=do_sample)
-    eda(data=data)
-    # ...
-    pass
+
+    if do_eda:
+        eda(data=data)  # n.b.: some approaches here _need_ scaled-down or sampled data
+    dep_var = "a"
+    indep_vars = ["b", "c"]
+    x_train, x_test, y_train, y_test = model.do_test_train_split(
+        df=data, indep_vars=indep_vars, dep_var=dep_var, test_size=0.30
+    )
+
+    model_types = ["global_naive", "sm_linear", "sk_linear"]
+    rs = fit_several_models(x_train=x_train, y_train=y_train, model_types=model_types)
+
+    # score_model(...)
+    # score_several_models(...)
+    # display_scores(...)
+
+    # print(
+    #     "modeling complete-- check that full dataset was used if intended-- consider further feature selection"
+    # )
 
 
 def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
@@ -25,6 +40,9 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     Load csv-format data and clean it using static code (for now)
     :param csv: string specifying location of csv file (e.g., 'data/sundae.csv')
     :return: returns a pandas dataframe containing the cleaned result
+
+    - could be refactored to separate concerns of loading and cleaning
+    - a more complex project would benefit from a dedicated data validation setup
     """
     data = pd.read_csv(
         csv
@@ -64,11 +82,60 @@ def eda(data: pd.DataFrame) -> None:
     )  # consider passing a slice of data (certain columns of interest)
     eda_tools.do_correl_heatmap(data=data)
     eda_tools.do_small_multiples(data=data, y_col=c.DEP_VAR_COL_NAME)
+    print("finished with this round of EDA")
 
 
-def do_modeling(data: pd.DataFrame) -> None:
+def fit_model(x_train: pd.DataFrame, y_train: pd.Series, model_type: str) -> dict:
+    """
+    Using the provided training data
+    :param x_train:
+    :param y_train:
+    :param model_type:
+    :return: returns a fit model as a dictionary like '{model_type: fit_model,}'
+
+    currently supported options for model_type:
+    - global_naive
+    - sm_linear
+    - sk_linear
+
+    - n.b.: python now has a switch statement for v >= 3.10; for now, use the more traditional if..elif..else
+    """
+    result: dict
+    if model_type == "global_naive":
+        result = model.do_global_naive(
+            y=y_train
+        )  # as it is global naive, it doesn't take xs as an input
+    elif model_type == "sm_linear":
+        result = model.do_statsmodels_lm(xs=x_train, y=y_train)
+    elif model_type == "sk_linear":
+        result = model.fit_lin_reg(xs=x_train, y=y_train)
+    else:
+        raise ValueError(
+            "Unexpected value for model_type. Value given: ", str(model_type)
+        )
+    return result
+
+
+def fit_several_models(
+    x_train: pd.DataFrame, y_train: pd.Series, model_types: list
+) -> dict:
+    """
+    apply fit_model over a list of supported model types, collect and return the results as a dictionary
+    :param x_train: matrix of independent variables as a pandas dataframe
+    :param y_train: corresponding dependent variables as a pandas series
+    :param model_types: list of model types to fit
+    :return: collection of fitted models as a dictionary like '{model_type1: fit_model1,..., model_typeN: fit_modelN,}'
+    """
+    results: dict = {}
+    for model_type in model_types:
+        result = fit_model(x_train=x_train, y_train=y_train, model_type=model_type)
+        results.update(result)
+    return results
+
+
+def score_model():
     pass
 
 
 if __name__ == "__main__":
-    main(do_sample=True)  # remember to disable later; arg. defaults to false
+    main(do_sample=True, do_eda=False)
