@@ -79,7 +79,7 @@ def do_statsmodels_lm(xs: pd.DataFrame, y: pd.Series) -> dict:
     return {"sm_linear": est2}
 
 
-def fit_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
+def do_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
     """
     Fit a linear regression on the specified columns using sklearn
     :param xs: (i.e. X) pandas dataframe to fit linear regression to
@@ -91,3 +91,30 @@ def fit_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
     y = y
     fit_model = regr.fit(X=xs, y=y)
     return {"sk_linear": fit_model}
+
+
+def score_global_naive(y_test: pd.Series, fit_model) -> None:
+    """
+    ...
+    :param y_test:
+    :param fit_model:
+    :return: returns nothing, but prints to STDOUT
+    """
+    test_fit = y_test.mean()
+    # ... TODO
+
+
+def score_sm_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+
+def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+    score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
+    params = fit_model.get_params(deep=True)
+    coefs = fit_model.coef_
+    print(
+        "R^2 score was: ",
+        score,
+        "\r\nparams were: ",
+        params,
+        "\r\ncoefficients were: ",
+        coefs,
+    )

@@ -123,7 +123,7 @@ def fit_model(x_train: pd.DataFrame, y_train: pd.Series, model_type: str) -> dic
     elif model_type == "sm_linear":
         result = model.do_statsmodels_lm(xs=x_train, y=y_train)
     elif model_type == "sk_linear":
-        result = model.fit_lin_reg(xs=x_train, y=y_train)
+        result = model.do_lin_reg(xs=x_train, y=y_train)
     else:
         raise ValueError(
             "Unexpected value for model_type. Value given: ", str(model_type)
@@ -148,9 +148,38 @@ def fit_several_models(
     return results
 
 
-def score_model():
-    pass
+def score_model(x_test: pd.DataFrame, y_test: pd.Series, model_to_test: dict) -> None:
+    """
+    Using the provided test data, evaluate the performance of the provided model
+    :param x_test: matrix of independent variables as a pandas dataframe
+    :param y_test: array of dependent variable as a pandas series
+    :param model_to_test: dictionary of {model_type: fitted_model,} pair
+    :return: nothing-- function called prints to STDOUT
 
+    possible future work:  return a dict for use in ensembling the models (e.g., weighted average approach)
+    """
+    for model_type, fit_model in model_to_test.items():
+        if model_type == "global_naive":
+            model.score_global_naive(x_test=x=test, )
+        elif model_type == "":
+            pass
+        else:
+            raise ValueError(str(model_type), "is not yet implemented")
+
+
+def score_several_models(x_test: pd.DataFrame, y_test: pd.Series, models_to_test: dict) -> None:
+    """
+    Using the provided test data, evaluate the performance of several models and print the results
+    :param x_test: matrix of independent variables as a pandas dataframe
+    :param y_test: array of dependent variable as a pandas series
+    :param models_to_test: dictionary of {model_type: fitted_model,} pairs
+    :return: nothing-- function it calls prints to STDOUT
+
+    possible future work:  return a dict for use in ensembling the models (e.g., weighted average approach)
+    """
+    for k, v in models_to_test.items():
+        model_to_test: dict = {k: v,}
+        score_model(x_test=x_test, y_test=y_test, model_to_test=model_to_test)
 
 if __name__ == "__main__":
     main(do_sample=True, do_eda=False)
