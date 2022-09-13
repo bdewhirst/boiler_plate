@@ -1,7 +1,9 @@
 import statsmodels.api as sm
 import pandas as pd
+import numpy as np
 from sklearn import model_selection as skl_model_selection
-from sklearn import linear_model  # as skl_linear_model
+from sklearn import linear_model as skl_linear_model
+from sklearn.metrics import r2_score as skl_r2
 
 
 def split_xs_and_ys(
@@ -86,7 +88,7 @@ def do_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
     :param y: pandas dataframe to fit linear regression to
     :return: dictionary of model type and fitted model as key/value pair
     """
-    regr = linear_model.LinearRegression()
+    regr = skl_linear_model.LinearRegression()
     xs = xs
     y = y
     fit_model = regr.fit(X=xs, y=y)
@@ -95,18 +97,44 @@ def do_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
 
 def score_global_naive(y_test: pd.Series, fit_model) -> None:
     """
-    ...
+    shoehorn the static value into an array of length
     :param y_test:
     :param fit_model:
     :return: returns nothing, but prints to STDOUT
     """
-    test_fit = y_test.mean()
-    # ... TODO
+    print("." * 10)
+    print("Accuracy metrics for global naive:")
+    y_test_label = y_test.columns
+    static_prediction = fit_model.iloc[0]
+    test_len = len(y_test)
+    same_len_array = np.arange(0, test_len, dtype=int)
+    y_pred = pd.DataFrame(
+        data=static_prediction, index=same_len_array, columns=[y_test_label]
+    )
+    r2 = skl_r2(y_true=y_test, y_pred=y_pred)  # strongly consider refactoring
+    print("global naive coefficient of determination (R^2) is: ", str(r2))
+    print("." * 10)
 
 
 def score_sm_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+    """
+    ...
+    :param x_test:
+    :param y_test:
+    :param fit_model:
+    :return:
+    """
+    print("." * 10)
+    print("Accuracy metrics for statsmodels linear regression:")
+    y_pred = fit_model.predict(x_test)
+    r2 = skl_r2(y_true=y_test, y_pred=y_pred)
+    print("global naive coefficient of determination (R^2) is: ", str(r2))
+    print("." * 10)
+
 
 def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+    print("." * 10)
+    print("accuracy metrics for Scikit-learn:")
     score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
     params = fit_model.get_params(deep=True)
     coefs = fit_model.coef_
@@ -118,3 +146,4 @@ def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> N
         "\r\ncoefficients were: ",
         coefs,
     )
+    print("." * 10)
