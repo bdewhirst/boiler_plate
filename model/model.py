@@ -1,4 +1,5 @@
 import statsmodels.api as sm
+import pandas as pd
 
 # import sklearn
 from sklearn import linear_model
@@ -28,7 +29,6 @@ def do_global_naive(y):
     # take a global average-- work on this further
     y_mean = y.mean()
     pass
-
 
 
 def fit_lin_reg(xs, y):  # -> model:
