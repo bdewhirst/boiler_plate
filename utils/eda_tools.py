@@ -41,6 +41,19 @@ def verbose_sniff(data: pd.DataFrame) -> None:
     )
 
 
+def col_deepdive(data: pd.DataFrame) -> None:
+    """
+    iterate over each column in the dataframe and output the number and values of unique entries
+    :param data:  pandas dataframe to be examined
+    :return: nothing-- currently prints to STDOUT
+    """
+    print("scrutinizing unique values for each column")
+    for col in data.columns:
+        print(col)
+        print(data[[col]].nunique())
+        print(sorted(data[col].unique()))
+
+
 def do_correl_matrix(data: pd.DataFrame) -> None:
     """
     print correlation matrix of supplied dataframe

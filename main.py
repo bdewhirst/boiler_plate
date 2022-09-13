@@ -43,7 +43,7 @@ def load_and_clean(csv: str, do_sample: bool = False) -> pd.DataFrame:
     data = pd.get_dummies(data, columns=cols_to_dummy)
     cols_to_drop: list = []  # !!!
     data = data.drop(labels=cols_to_drop, axis=1)
-    cols_w_nan: list = []
+    cols_w_nan: list = []  # !!!
     for nancol in cols_w_nan:
         data[nancol].fillna(value=data[nancol].mean(), inplace=True)
     # ...
@@ -59,9 +59,11 @@ def eda(data: pd.DataFrame) -> None:
     :return: nothing (it writes to standard out, or logs if logs are later implemented)
     """
     eda_tools.verbose_sniff(data=data)
+    eda_tools.col_deepdive(
+        data=data
+    )  # consider passing a slice of data (certain columns of interest)
     eda_tools.do_correl_heatmap(data=data)
     eda_tools.do_small_multiples(data=data, y_col=c.DEP_VAR_COL_NAME)
-    # more?
 
 
 def do_modeling(data: pd.DataFrame) -> None:
