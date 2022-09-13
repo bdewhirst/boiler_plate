@@ -148,3 +148,29 @@ def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> N
         coefs,
     )
     print("." * 10)
+
+
+
+
+# scikit-learn logistic regression (regularized out of the box)
+def do_skl_logit(xs, y, train_on):
+    skl_logit = skl_linear_model.LogisticRegression()  # sklearn
+    skl_logit.fit(xs, y)
+    return {'logistic': skl_logit}  # a trained booster model
+
+# (xs=x_train, y=y_train, train_on=["age", "cons.price.idx"])
+def score_sk_logistic(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+    print("." * 10)
+    print("accuracy metrics for Scikit-learn:")
+    score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
+    params = fit_model.get_params(deep=True)
+    coefs = fit_model.coef_
+    print(
+        "R^2 score was: ",
+        score,
+        "\r\nparams were: ",
+        params,
+        "\r\ncoefficients were: ",
+        coefs,
+    )
+    print("." * 10)

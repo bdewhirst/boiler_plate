@@ -21,12 +21,13 @@ def main(do_sample: bool = False, do_eda: bool = False, do_seed: bool = True) ->
 
     if do_eda:
         eda(data=data)  # n.b.: some approaches here _need_ scaled-down or sampled data
-    dep_var = "a"
-    indep_vars = ["b", "c"]
+    dep_var = "y_yes"
+    indep_vars = ["age", "cons.price.idx"]
     x_train, x_test, y_train, y_test = model.do_test_train_split(
         df=data, indep_vars=indep_vars, dep_var=dep_var, test_size=0.30
     )
-    model_types = ["global_naive", "sm_linear", "sk_linear"]
+    # model_types = ["global_naive", "sm_linear", "sk_linear"]
+    model_types = ["logistic"]
     trained_models = fit_several_models(
         x_train=x_train, y_train=y_train, model_types=model_types
     )
@@ -54,7 +55,7 @@ def load_and_clean(
     - a more complex project would benefit from a dedicated data validation setup
     """
     data = pd.read_csv(
-        csv
+        csv, delimiter=";"
     )  # may need to be refactored if the data isn't in csv format. Alternatively, convert it.
 
     if do_sample:  # for dev. n.b.: "row 0" here != "row 0" in original.
@@ -72,14 +73,20 @@ def load_and_clean(
     data.columns = data.columns.str.lower()  # all column names to lower case
     # ...
     # cols to dummy-- i.e., onehot encode, etc.
-    cols_to_dummy: list = []  # !!!
-    data = pd.get_dummies(data, columns=cols_to_dummy)
-    cols_to_drop: list = []  # !!!
-    data = data.drop(labels=cols_to_drop, axis=1)
-    cols_w_nan: list = []  # !!!
-    for nancol in cols_w_nan:
-        data[nancol].fillna(value=data[nancol].mean(), inplace=True)
-    # ...
+    # cols_to_dummy: list = []  # !!!
+    # data = pd.get_dummies(data, columns=cols_to_dummy)
+    # cols_to_drop: list = []  # !!!
+    # data = data.drop(labels=cols_to_drop, axis=1)
+    # cols_w_nan: list = []  # !!!
+    # for nancol in cols_w_nan:
+    #     data[nancol].fillna(value=data[nancol].mean(), inplace=True)
+    data = pd.get_dummies(data, columns=["y"])
+    # columns = data.columns
+    data = data[['age', 'job', 'marital', 'education', 'default', 'housing', 'loan',
+       'contact', 'month', 'day_of_week', 'duration', 'campaign', 'pdays',
+       'previous', 'poutcome', 'emp.var.rate', 'cons.price.idx',
+       'cons.conf.idx', 'euribor3m', 'nr.employed', 'y_yes']]
+    # data.to_csv('data/sundae-cleaned.csv')
     # ...
     data = data.dropna()  # crude... but may catch something otherwise missed
     return data
@@ -124,6 +131,8 @@ def fit_model(x_train: pd.DataFrame, y_train: pd.Series, model_type: str) -> dic
         result = model.do_statsmodels_lm(xs=x_train, y=y_train)
     elif model_type == "sk_linear":
         result = model.do_lin_reg(xs=x_train, y=y_train)
+    elif model_type == "logistic":
+        result = model.do_skl_logit(xs=x_train, y=y_train, train_on=["age", "cons.price.idx"])
     else:
         raise ValueError(
             "Unexpected value for model_type. Value given: ", str(model_type)
@@ -165,6 +174,8 @@ def score_model(x_test: pd.DataFrame, y_test: pd.Series, model_to_test: dict) ->
             model.score_sm_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
         elif model_type == "sk_linear":
             model.score_sk_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
+        elif model_type == "logistic":
+            model.score_sk_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
         else:
             raise ValueError(str(model_type), "is not yet implemented")
 
@@ -189,4 +200,4 @@ def score_several_models(
 
 
 if __name__ == "__main__":
-    main(do_sample=False, do_eda=True)
+    main(do_sample=True, do_eda=False)
