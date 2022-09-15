@@ -1,4 +1,6 @@
 # Documentation
+as of 2022-09-12, this is out of date and incomplete
+***
 
 ## general notes
 * all scripts are assumed to execute with the parent directory as their working directory (_i.e_, `> python3 setup/sqlite_setup.py`)

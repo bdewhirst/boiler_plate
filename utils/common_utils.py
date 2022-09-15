@@ -17,17 +17,6 @@ def csv_loader(
     return data
 
 
-def sniff_frame(df: pd.DataFrame) -> None:
-    """
-    run some standard sniff tests on the indicated dataframe
-    :param df: pandas dataframe
-    :return: nothing; function outputs to terminal
-    """
-    print(df.columns)
-    print(df.shape)
-    print(df.describe())  # we'd need to tweak the width
-
-
 def sqlite_connect():
     """
     Create a connection to the sqlite database specified by the included constants

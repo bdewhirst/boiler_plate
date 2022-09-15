@@ -3,7 +3,9 @@
 google_credential.json
 *.csv
 tmp*
-
+*.xls*
+*.xlm*
+*.zip*
 
 
 # Byte-compiled / optimized / DLL files
