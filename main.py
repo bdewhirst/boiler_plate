@@ -170,13 +170,28 @@ def score_model(x_test: pd.DataFrame, y_test: pd.Series, model_to_test: dict) ->
     """
     for model_type, fit_model in model_to_test.items():
         if model_type == "global_naive":
-            model.score_global_naive(y_test=y_test, fit_model=fit_model)
+            model.score_global_naive(
+                y_test=y_test,
+                fit_model=fit_model,
+            )
         elif model_type == "sm_linear":
-            model.score_sm_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
+            model.score_sm_linear_fit(
+                x_test=x_test,
+                y_test=y_test,
+                fit_model=fit_model,
+            )
         elif model_type == "sk_linear":
-            model.score_sk_linear_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
+            model.score_sk_linear_fit(
+                x_test=x_test,
+                y_test=y_test,
+                fit_model=fit_model,
+            )
         elif model_type == "logistic":
-            model.score_sk_logistic_fit(x_test=x_test, y_test=y_test, fit_model=fit_model)
+            model.score_sk_logistic(
+                x_test=x_test,
+                y_test=y_test,
+                fit_model=fit_model,
+            )
         else:
             raise ValueError(str(model_type), "is not yet implemented")
 
@@ -201,4 +216,4 @@ def score_several_models(
 
 
 if __name__ == "__main__":
-    main(do_sample=True, do_eda=False)
+    main(do_sample=True, do_eda=True)

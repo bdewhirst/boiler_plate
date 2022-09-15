@@ -203,21 +203,31 @@ def do_skl_logit(
     return {"logistic": skl_logit}
 
 
-# review best metrics for fitting logistic regressions-- probably not R^2
-# (xs=x_train, y=y_train, train_on=c.INDEP_VAR_COL_NAMES)
-# def score_sk_logistic(x_test: pd.DataFrame, y_test: pd.DataFrame, fit_model) -> None:
-#     y_test = y_test.values.ravel()
-#     print("." * 10)
-#     print("accuracy metrics for Scikit-learn:")
-#     score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
-#     params = fit_model.get_params(deep=True)
-#     coefs = fit_model.coef_
-#     print(
-#         "R^2 score was: ",
-#         score,
-#         "\r\nparams were: ",
-#         params,
-#         "\r\ncoefficients were: ",
-#         coefs,
-#     )
-#     print("." * 10)
+def score_sk_logistic(
+    x_test: pd.DataFrame,
+    y_test: pd.DataFrame,
+    fit_model,
+) -> None:
+    """
+    Evaluate the accuracy of the logistic regression on holdout data. Note that "Vanilla R^2" isn't helpful here.
+    :param x_test: matrix of independent holdout data (aka X)
+    :param y_test: array of dependent holdout data
+    :param fit_model: fitted sklearn logistic regression to be evaluated
+    :return: returns nothing; prints to STDOUT
+
+    future work: add additional accuracy metrics (a pseudo R^2, possibly plots as well)
+    """
+    y_test = y_test.values.ravel()
+    print("." * 10)
+    print("accuracy metrics for Scikit-learn: ")
+    score = fit_model.score(x_test, y_test)
+    params = fit_model.get_params(deep=True)
+    coefs = fit_model.coef_
+    print(
+        "n.b.: this is not R^2 \r\n\ Mean accuracy on the given test data. score was: ",
+        score,
+        "\r\nparams were: ",
+        params,
+        "\r\ncoefficients were: ",
+        coefs,
+    )
