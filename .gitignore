@@ -5,6 +5,7 @@ google_credential.json
 tmp*
 *.xls*
 *.xlm*
+*.zip*
 
 
 # Byte-compiled / optimized / DLL files
