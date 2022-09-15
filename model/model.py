@@ -23,7 +23,10 @@ def split_xs_and_ys(
 
 
 def do_test_train_split(
-    df: pd.DataFrame, indep_vars: list, dep_var: str, test_size: float = 0.25
+    df: pd.DataFrame,
+    indep_vars: list,
+    dep_var: str,
+    test_size: float = 0.25,
 ) -> tuple:
     """
     given a pandas dataframe and specified independent variable, perform a test train split and return tuple of all four
@@ -39,12 +42,14 @@ def do_test_train_split(
         y_col=dep_var,
     )
     x_train, x_test, y_train, y_test = skl_model_selection.train_test_split(
-        xs, y, test_size=test_size
+        xs,
+        y,
+        test_size=test_size,
     )
     return x_train, x_test, y_train, y_test
 
 
-def do_global_naive(y: pd.Series) -> dict:
+def do_global_naive(y: pd.DataFrame) -> dict:
     """
     Take the global average of all dependent training data
     :param y: array of values of dependent variable
@@ -57,17 +62,25 @@ def do_global_naive(y: pd.Series) -> dict:
     }
 
 
-def do_groupby_naive(xs: pd.DataFrame, y: pd.Series) -> dict:
+def do_groupby_naive(
+    xs: pd.DataFrame,
+    y: pd.DataFrame,
+    group_cols: list,
+) -> dict:
     """
-    ...
-    :param xs:
-    :param y:
-    :return:
+    Use pandas' groupby method to take the averages of each unique combination of columns grouped-by
+    :param xs:  (i.e. X) independent variables
+    :param y: 1-D dependent data to fit on by taking
+    :param group_cols: list of column names to aggregate on
+    :return: dictionary of a label and 'trained model' (averages by
     """
     raise ValueError("This model type isn't actually implemented yet")
 
 
-def do_statsmodels_lm(xs: pd.DataFrame, y: pd.Series) -> dict:
+def do_statsmodels_lm(
+    xs: pd.DataFrame,
+    y: pd.DataFrame,
+) -> dict:
     """
     Fit a linear regression on the specified columns using statsmodels
     :param xs: (i.e. X) pandas dataframe to fit linear regression to
@@ -81,7 +94,10 @@ def do_statsmodels_lm(xs: pd.DataFrame, y: pd.Series) -> dict:
     return {"sm_linear": est2}
 
 
-def do_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
+def do_lin_reg(
+    xs: pd.DataFrame,
+    y: pd.DataFrame,
+) -> dict:
     """
     Fit a linear regression on the specified columns using sklearn
     :param xs: (i.e. X) pandas dataframe to fit linear regression to
@@ -89,15 +105,17 @@ def do_lin_reg(xs: pd.DataFrame, y: pd.Series) -> dict:
     :return: dictionary of model type and fitted model as key/value pair
     """
     regr = skl_linear_model.LinearRegression()
-    xs = xs
-    y = y
+    y = y.values.ravel()
     fit_model = regr.fit(X=xs, y=y)
     return {"sk_linear": fit_model}
 
 
-def score_global_naive(y_test: pd.Series, fit_model) -> None:
+def score_global_naive(
+    y_test: pd.DataFrame,
+    fit_model: dict,
+) -> None:
     """
-    shoehorn the static value into an array of length
+    shoehorn the static value into an array of same length as the test data and evaluate coefficient of determination
     :param y_test:
     :param fit_model:
     :return: returns nothing, but prints to STDOUT
@@ -108,34 +126,52 @@ def score_global_naive(y_test: pd.Series, fit_model) -> None:
     static_prediction = fit_model.iloc[0]
     test_len = len(y_test)
     same_len_array = np.arange(0, test_len, dtype=int)
+    y_test = y_test.values.ravel()
     y_pred = pd.DataFrame(
         data=static_prediction, index=same_len_array, columns=[y_test_label]
-    )
+    ).values.ravel()
     r2 = skl_r2(y_true=y_test, y_pred=y_pred)  # strongly consider refactoring
     print("global naive coefficient of determination (R^2) is: ", str(r2))
     print("." * 10)
 
 
-def score_sm_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+def score_sm_linear_fit(
+    x_test: pd.DataFrame,
+    y_test: pd.DataFrame,
+    fit_model,
+) -> None:
     """
-    ...
-    :param x_test:
-    :param y_test:
-    :param fit_model:
-    :return:
+    Evaluate the coefficient of determination (R^2) of statsmodels linear regression
+    :param x_test: (aka X) holdout independent variable values
+    :param y_test: holdout dependent variable values
+    :param fit_model: model trained on training data to be evaluated
+    :return: returns nothing; prints to STDOUT
     """
     x_test = sm.add_constant(x_test)
+    y_test = y_test.values.ravel()
     print("." * 10)
     print("Accuracy metrics for statsmodels linear regression:")
-    y_pred = fit_model.predict(x_test)
+    y_pred = fit_model.predict(x_test).values.ravel()
     r2 = skl_r2(y_true=y_test, y_pred=y_pred)
-    print("global naive coefficient of determination (R^2) is: ", str(r2))
+    print("statsmodels coefficient of determination (R^2) is: ", str(r2))
     print("." * 10)
 
 
-def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
+def score_sk_linear_fit(
+    x_test: pd.DataFrame,
+    y_test: pd.DataFrame,
+    fit_model,
+) -> None:
+    """
+    Evaluate the coefficient of determination (R^2) of sklearn linear regression
+    :param x_test: (aka X) holdout independent variable values
+    :param y_test: holdout dependent variable values
+    :param fit_model: model trained on training data to be evaluated
+    :return: returns nothing; prints to STDOUT
+    """
     print("." * 10)
     print("accuracy metrics for Scikit-learn:")
+    y_test = y_test.values.ravel()
     score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
     params = fit_model.get_params(deep=True)
     coefs = fit_model.coef_
@@ -150,27 +186,38 @@ def score_sk_linear_fit(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> N
     print("." * 10)
 
 
-
-
-# scikit-learn logistic regression (regularized out of the box)
-def do_skl_logit(xs, y, train_on):
-    skl_logit = skl_linear_model.LogisticRegression()  # sklearn
+def do_skl_logit(
+    xs: pd.DataFrame,
+    y: pd.DataFrame,
+) -> dict:
+    """
+    scikit-learn logistic regression (regularized out of the box)
+    :param x_test: (aka X) holdout independent variable values
+    :param y_test: holdout dependent variable values
+    :param fit_model: model trained on training data to be evaluated
+    :return: returns nothing; prints to STDOUT
+    """
+    y = y.values.ravel()
+    skl_logit = skl_linear_model.LogisticRegression()
     skl_logit.fit(xs, y)
-    return {'logistic': skl_logit}  # a trained booster model
+    return {"logistic": skl_logit}
 
-# (xs=x_train, y=y_train, train_on=["age", "cons.price.idx"])
-def score_sk_logistic(x_test: pd.DataFrame, y_test: pd.Series, fit_model) -> None:
-    print("." * 10)
-    print("accuracy metrics for Scikit-learn:")
-    score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
-    params = fit_model.get_params(deep=True)
-    coefs = fit_model.coef_
-    print(
-        "R^2 score was: ",
-        score,
-        "\r\nparams were: ",
-        params,
-        "\r\ncoefficients were: ",
-        coefs,
-    )
-    print("." * 10)
+
+# review best metrics for fitting logistic regressions-- probably not R^2
+# (xs=x_train, y=y_train, train_on=c.INDEP_VAR_COL_NAMES)
+# def score_sk_logistic(x_test: pd.DataFrame, y_test: pd.DataFrame, fit_model) -> None:
+#     y_test = y_test.values.ravel()
+#     print("." * 10)
+#     print("accuracy metrics for Scikit-learn:")
+#     score = fit_model.score(x_test, y_test)  # i.e. coefficient of determination, R^2
+#     params = fit_model.get_params(deep=True)
+#     coefs = fit_model.coef_
+#     print(
+#         "R^2 score was: ",
+#         score,
+#         "\r\nparams were: ",
+#         params,
+#         "\r\ncoefficients were: ",
+#         coefs,
+#     )
+#     print("." * 10)
