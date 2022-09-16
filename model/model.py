@@ -216,6 +216,7 @@ def score_sk_logistic(
     :return: returns nothing; prints to STDOUT
 
     future work: add additional accuracy metrics (a pseudo R^2, possibly plots as well)
+    ref on different pseudo-R^2 methods: https://datascience.oneoffcoder.com/psuedo-r-squared-logistic-regression.html
     """
     y_test = y_test.values.ravel()
     print("." * 10)
