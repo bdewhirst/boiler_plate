@@ -12,3 +12,9 @@ Currently, branch(es) are related to recruitment-related data exercises and my p
 --
 Brian Dewhirst, PhD
 b.dewhirst@gmail.com
+
+----
+TODO week of 9/26:
+- refactor certain sections (EDA, modeling) into classes
+- add tests
+- add tests to confirm pipeline will work with generalized/alternate data
