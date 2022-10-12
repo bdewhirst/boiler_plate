@@ -3,6 +3,8 @@ import os
 
 import pandas as pd
 
+import utils.constants as c
+
 
 def csv_loader(
     source_file: str,
