@@ -4,6 +4,21 @@ import matplotlib.pyplot as plt
 import seaborn as sb
 
 
+from abc import ABC, abstractmethod
+
+
+class ModelEDA(ABC):
+    @abstractmethod
+    def sniff(self, data):
+        raise NotImplementedError("EDA must implement sniff tests")
+
+    @abstractmethod
+    def plot(self, data):
+        raise NotImplementedError("EDA must implement plots as part of data analysis")
+
+    # ...
+
+
 def say_tp_message(desc: str, strdata: str) -> None:
     """
     Print a simple (two part) message consisting of two strings
