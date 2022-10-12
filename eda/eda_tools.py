@@ -8,7 +8,6 @@ from abc import ABC, abstractmethod
 from utils.common_utils import say_tp_message
 
 
-
 class AbstractEDASniff(ABC):
     @abstractmethod
     def __init__(self, data):
@@ -32,8 +31,6 @@ class AbstractEDAPlot(ABC):
 class SimpleEDASniff(AbstractEDASniff):
     def __init__(self, data: pd.DataFrame):
         self.data = data
-
-
 
     def _col_deepdive(self) -> None:
         """
