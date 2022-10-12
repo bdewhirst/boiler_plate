@@ -39,23 +39,15 @@ def main(do_sample: bool = False, do_eda: bool = False, do_seed: bool = True) ->
         #
         this_model = model_class()
         print(f"fitting {model_type} on training data")
-        this_model.fit(indep_data=y_train, dep_data=x_train)
+        this_model.fit(indep_data=x_train, dep_data=y_train)
         print(f"applying {model_type} on test data")
-        this_model.apply(dep_data=x_test)
+        this_model.apply(indep_data=x_test)
         print(f"scoring {model_type}")
         this_model.score(true_data=y_test)
 
-    # trained_models = fit_several_models(
-    #     x_train=x_train, y_train=y_train, model_types=model_types
-    # )
-    # score_several_models(x_test=x_test, y_test=y_test, models_to_test=trained_models)
-
-    # ensembling?
-    # evaluate ensemble results?
-
 
 if __name__ == "__main__":
-    main(do_sample=True, do_eda=True)
+    main(do_sample=c.DO_SAMPLE, do_eda=c.DO_EDA)
     print(
         """
         Modeling complete. Check that full dataset was used if intended. Consider further improvements.
