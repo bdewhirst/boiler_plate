@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import warnings
 
 import statsmodels.api as sm
 import pandas as pd
@@ -53,16 +54,10 @@ class SimpleModelPrep(ModelPrep):
         return skl_model_selection.train_test_split(xs, y, test_size=self.test_size)
 
 
-class Model(ABC):
+class ABCModel(ABC):
     """
     Abstract base class defining required functionality of a model
     """
-
-    # @abstractmethod
-    # def __init__(self, data):
-    #     raise NotImplementedError(
-    #         "Prep must implement initialization of data, dependent and independent variables"
-    #     )
 
     @abstractmethod
     def fit(self, indep_data, dep_data):
@@ -83,6 +78,24 @@ class Model(ABC):
         )
 
 
+class Model(ABCModel):
+    """
+    Model class with "common-denominator" versions of apply and score methods
+    """
+    def fit(self, indep_data, dep_data):
+        warnings.warn("Warning: This is a default method")
+        self.fit_model = None
+
+    def apply(self, indep_data):
+        self.applied_results = self.fit_model.predict(indep_data)
+
+    def score(self, true_data):
+        y_test = true_data.values.ravel()
+        y_pred = self.applied_results
+        r2 = skl_r2(y_true=y_test, y_pred=y_pred)
+        print("model coefficient of determination (R^2) is: ", str(r2))
+
+
 class StatsModelsLinear(Model):
     def fit(self, indep_data, dep_data):
         """
@@ -101,13 +114,8 @@ class StatsModelsLinear(Model):
         self.applied_results = self.fit_model.predict(x_test).values.ravel()
 
     def score(self, true_data):
-        print("." * 10)
-        print("Accuracy metrics for statsmodels linear regression:")
-        y_test = true_data.values.ravel()
-        y_pred = self.applied_results
-        r2 = skl_r2(y_true=y_test, y_pred=y_pred)
-        print("statsmodels coefficient of determination (R^2) is: ", str(r2))
-        print("." * 10)
+        r2 = skl_r2(y_true=true_data, y_pred=self.applied_results)
+        print("coefficient of determination (R^2) is: ", str(r2))
 
 
 class SciKitLearnLinear(Model):
@@ -133,18 +141,6 @@ class SciKitLearnLinear(Model):
             coefs,
         )
 
-    def apply(self, indep_data):
-        self.applied_results = self.fit_model.predict(indep_data)
-
-    def score(self, true_data):
-        print("." * 10)
-        print("accuracy metrics for Scikit-learn:")
-        y_test = true_data
-        y_pred = self.applied_results
-        r2 = skl_r2(y_true=y_test, y_pred=y_pred)
-        print("statsmodels coefficient of determination (R^2) is: ", str(r2))
-        print("." * 10)
-
 
 class SciKitLearnLogistic(Model):
     def fit(self, indep_data, dep_data):
@@ -163,8 +159,6 @@ class SciKitLearnLogistic(Model):
             coefs,
         )
 
-    def apply(self, indep_data):
-        self.applied_results = self.fit_model.predict(indep_data)
 
     def score(self, true_data):
         """
@@ -182,10 +176,8 @@ class SciKitLearnLogistic(Model):
         y_test = true_data
         y_pred = self.applied_results
         r2 = skl_r2(y_true=y_test, y_pred=y_pred)
-        print(
-            "statsmodels coefficient of determination (R^2) is: ", str(r2)
-        )  # TODO!!! see docstring!!!
-        print("." * 10)
+        warnings.warn("Warning: this isn't a good/sufficient accuracy metric")
+        print("coefficient of determination (R^2) is: ", str(r2))
 
     # ensembling?
     # evaluate ensemble results?
@@ -224,7 +216,7 @@ class NaiveModel(Model):
     def apply(self, indep_data):
         self.applied_result = self.global_naive_fit.get("global_naive")[
             0
-        ]  # i.e., the only value in the series
+        ]
         # note: this model.apply _purposefully_ does nothing with indep_data: a global naive model has a constant result
 
     def score(self, true_data) -> None:
@@ -232,8 +224,6 @@ class NaiveModel(Model):
         shoehorn the static value into an array of same length as the test data and evaluate coefficient of determination
         :return: returns nothing, but prints to STDOUT
         """
-        print("." * 10)
-        print("Accuracy metrics for global naive:")
         y_test_label = true_data.columns
         test_len = len(true_data)
         same_len_array = np.arange(0, test_len, dtype=int)
@@ -244,5 +234,4 @@ class NaiveModel(Model):
             columns=[y_test_label],
         ).values.ravel()
         r2 = skl_r2(y_true=y_test, y_pred=y_pred)  # strongly consider refactoring
-        print("global naive coefficient of determination (R^2) is: ", str(r2))
-        print("." * 10)
+        print("coefficient of determination (R^2) is: ", str(r2))
